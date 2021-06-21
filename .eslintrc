@@ -1,0 +1,17 @@
+{
+  "env": { "node": true, "jest": true },
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint/eslint-plugin"],
+  "extends": [
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/explicit-function-return-type": "off"
+  },
+  "parserOptions": { "project": "tsconfig.json", "sourceType": "module" }
+}
