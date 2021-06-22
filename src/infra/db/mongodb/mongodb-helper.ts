@@ -23,8 +23,9 @@ export default class MongodbHelper {
     return this.mongodbClient.db().collection(collectionName)
   }
 
-  static map(data: anyObjectData): anyObjectData {
-    return { ...data, id: data._id }
+  static map(documentData: anyObjectData): anyObjectData {
+    const { _id, ...restDocumentData } = documentData
+    return { id: _id, ...restDocumentData }
   }
 
   static mapCollection(collection: anyObjectData[]): anyObjectData[] {
