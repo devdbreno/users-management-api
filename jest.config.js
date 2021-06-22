@@ -1,6 +1,6 @@
 module.exports = {
   roots: ['<rootDir>/test'],
-  preset: '@shelf/jest-mongodb',
+  preset: 'ts-jest',
   transform: {
     '.+\\.ts$': 'ts-jest'
   },
@@ -8,7 +8,8 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
   moduleNameMapper: {
     '@test/(.*)': '<rootDir>/test/$1',
-    '@main/(.*)': '<rootDir>/src/main/$1'
+    '@main/(.*)': '<rootDir>/src/main/$1',
+    '@infra/(.*)': '<rootDir>/src/infra/$1'
   },
   coverageProvider: 'babel',
   coverageDirectory: 'coverage'

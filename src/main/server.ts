@@ -6,7 +6,7 @@ async function bootstrap() {
   const { default: app } = await import('@main/config/app')
 
   app.listen(env.PORT, () => {
-    console.log(`➡️ Server running at http://localhost:${env.PORT}`)
+    console.log(`Server running at http://localhost:${env.PORT}`)
   })
 }
 

@@ -18,8 +18,8 @@
     "baseUrl": ".",
     "rootDirs": ["src", "test"],
     "paths": {
-      "@main/*": ["src/main/*"]
+      "@main/*": ["src/main/*"],
+      "@infra/*": ["src/infra/*"]
     }
-  },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  }
 }
