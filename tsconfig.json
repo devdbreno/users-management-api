@@ -4,6 +4,7 @@
     "module": "CommonJS",
     "strict": true,
     "sourceMap": true,
+    "typeRoots": ["@types", "node_modules/@types"],
     "noImplicitAny": true,
     "removeComments": true,
     "esModuleInterop": true,
@@ -19,7 +20,8 @@
     "rootDirs": ["src", "test"],
     "paths": {
       "@main/*": ["src/main/*"],
-      "@infra/*": ["src/infra/*"]
+      "@infra/*": ["src/infra/*"],
+      "@presentation/*": ["src/presentation/*"]
     }
   }
 }
