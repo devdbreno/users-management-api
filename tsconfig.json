@@ -13,12 +13,13 @@
     "experimentalDecorators": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "baseUrl": ".",
     "rootDirs": ["src", "test"],
     "paths": {
-      "@/*": ["src/*"],
-      "@frameworks/*": ["src/frameworks/*"]
+      "@main/*": ["src/main/*"]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }
