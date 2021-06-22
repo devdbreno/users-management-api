@@ -9,7 +9,8 @@ module.exports = {
   moduleNameMapper: {
     '@test/(.*)': '<rootDir>/test/$1',
     '@main/(.*)': '<rootDir>/src/main/$1',
-    '@infra/(.*)': '<rootDir>/src/infra/$1'
+    '@infra/(.*)': '<rootDir>/src/infra/$1',
+    '@presentation/(.*)': '<rootDir>/src/presentation/$1'
   },
   coverageProvider: 'babel',
   coverageDirectory: 'coverage'
