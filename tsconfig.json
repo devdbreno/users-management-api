@@ -19,8 +19,10 @@
     "baseUrl": ".",
     "rootDirs": ["src", "test"],
     "paths": {
+      "@test/*": ["test/*"],
       "@main/*": ["src/main/*"],
       "@infra/*": ["src/infra/*"],
+      "@domain/*": ["src/domain/*"],
       "@presentation/*": ["src/presentation/*"]
     }
   }

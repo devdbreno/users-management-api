@@ -1,56 +1,47 @@
+import { deepStrictEqual } from 'assert'
+
 import request from 'supertest'
 import { Collection } from 'mongodb'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 import app from '@main/config/app'
-import { mongodbHelper } from '@main/server'
+import { MONGO_URL } from '@main/config/env'
 
-let userCollection: Collection
+import { genRandomValidUser } from '@test/__fixtures__/domain'
+import { MongodbHelper } from '@infra/db/mongodb/mongodb-helper'
 
 describe('User Routes', () => {
+  let userCollection: Collection
+
   beforeAll(async () => {
-    const mongodbUri = await new MongoMemoryServer().getUri()
-    await mongodbHelper.connect(mongodbUri)
+    await MongodbHelper.connect(MONGO_URL)
   })
 
   afterAll(async () => {
-    await mongodbHelper.disconnect()
+    await MongodbHelper.disconnect()
   })
 
   beforeEach(async () => {
-    userCollection = await mongodbHelper.getCollection('users')
+    userCollection = await MongodbHelper.getCollection('users')
     await userCollection.deleteMany({})
   })
 
   describe('POST /user', () => {
-    const userDataRequest = {
-      name: 'Deivid',
-      lastname: 'Novaes',
-      nickname: 'devdbreno',
-      address: 'London EC3N 4AB, Reino Unido',
-      biography: 'A Back-End Developer :)'
-    }
+    const randomValidUser = genRandomValidUser()
 
-    it(`Should return 201 'Created' when creating a user`, async () => {
-      const response = await request(app).post('/api/user').send(userDataRequest)
-      const userNicknameRes: string = response.body.nickname
-
-      const { nickname: userNicknameDb } = await userCollection.findOne(
-        { nickname: userNicknameRes },
-        { projection: { nickname: 1, _id: 0 } }
-      )
-
-      expect(userNicknameDb).toEqual(userNicknameRes)
+    it(`Should return 201 'Created' when creating user`, async () => {
+      await request(app).post('/api/user').send(randomValidUser).expect(201)
     })
 
-    // it(`Should return 409 'Conflict' when creating a user with nickname already in use`, async () => {
-    // await userCollection.insertOne(addUserData)
+    it(`Should return 409 'Conflict' when creating user with existing nickname`, async () => {
+      await request(app)
+        .post('/api/user')
+        .send({ ...randomValidUser, nickname: 'torvalds' })
 
-    //   const { body } = await request(app).post('/api/user').send(addUserData).expect(404)
-
-    //   expect(body).toEqual({
-    //     message: `'Nickname '${addUserData.nickname}' is already in use'`
-    //   })
-    // })
+      await request(app)
+        .post('/api/user')
+        .send({ ...randomValidUser, nickname: 'torvalds' })
+        .expect(409)
+        .expect(({ body: { error } }) => deepStrictEqual(error, 'Nickname is already in use'))
+    })
   })
 })

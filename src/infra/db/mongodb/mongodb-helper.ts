@@ -1,34 +1,25 @@
 import { MongoClient, Collection } from 'mongodb'
 
-import { anyObjectData } from '@main/config/app'
+import { anyData } from '@main/config/app'
 
-export default class MongodbHelper {
-  private mongodbUri!: string
-  private mongodbClient!: MongoClient
+let mongodbUri: string
+let mongodbClient: MongoClient
 
-  public async connect(uri: string): Promise<void> {
-    this.mongodbUri = uri
-    this.mongodbClient = await MongoClient.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    })
-  }
+export const MongodbHelper = {
+  async connect(uri: string): Promise<void> {
+    mongodbUri = uri
+    mongodbClient = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  },
 
-  public async disconnect(): Promise<void> {
-    await this.mongodbClient.close()
-  }
+  async disconnect(): Promise<void> {
+    await mongodbClient.close()
+  },
 
-  async getCollection(collectionName: string): Promise<Collection> {
-    if (!this.mongodbClient.isConnected()) await this.connect(this.mongodbUri)
-    return this.mongodbClient.db().collection(collectionName)
-  }
+  async getCollection(name: string): Promise<Collection> {
+    if (!mongodbClient.isConnected()) await this.connect(mongodbUri)
+    return mongodbClient.db().collection(name)
+  },
 
-  static map(documentData: anyObjectData): anyObjectData {
-    const { _id, ...restDocumentData } = documentData
-    return { id: _id, ...restDocumentData }
-  }
-
-  static mapCollection(collection: anyObjectData[]): anyObjectData[] {
-    return collection.map((c) => MongodbHelper.map(c))
-  }
+  map: ({ _id, ...rest }: anyData): anyData => ({ id: _id, ...rest }),
+  mapCollection: (collec: anyData[]): anyData[] => collec.map((c) => MongodbHelper.map(c))
 }

@@ -3,7 +3,7 @@ import express from 'express'
 import initRoutes from '@main/config/routes'
 import initMiddlewares from '@main/config/middlewares'
 
-export type anyObjectData = Record<string, unknown>
+export type anyData = Record<string, unknown>
 
 const app = express()
 

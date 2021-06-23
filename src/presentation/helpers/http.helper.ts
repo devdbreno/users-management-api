@@ -1,13 +1,14 @@
-import { anyObjectData } from '@main/config/app'
+import { anyData } from '@main/config/app'
+
 import { ServerError } from '@presentation/errors'
 import { HttpResponse } from '@presentation/protocols'
 
-export const ok = (data: anyObjectData): HttpResponse => ({
+export const ok = (data: anyData): HttpResponse => ({
   statusCode: 200,
   body: data
 })
 
-export const created = (data: anyObjectData): HttpResponse => ({
+export const created = (data: anyData): HttpResponse => ({
   body: data,
   statusCode: 201
 })

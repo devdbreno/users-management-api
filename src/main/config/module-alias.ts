@@ -1,10 +1,11 @@
 import { join, resolve } from 'path'
 import { addAliases } from 'module-alias'
 
-const rootDir = resolve(__dirname, '../..')
+export const rootDir = resolve(__dirname, '../../..')
 
 addAliases({
-  '@main': join(rootDir, 'main'),
-  '@infra': join(rootDir, 'infra'),
-  '@presentation': join(rootDir, 'presentation')
+  '@main': join(rootDir, 'src/main'),
+  '@infra': join(rootDir, 'src/infra'),
+  '@domain': join(rootDir, 'src/domain'),
+  '@presentation': join(rootDir, 'src/presentation')
 })

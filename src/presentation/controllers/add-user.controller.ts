@@ -1,9 +1,9 @@
 // import { AddUserUsecase } from '@domain/usecases'
-import { mongodbHelper } from '@main/server'
-import { created, serverError } from '@presentation/helpers'
-import { Controller, HttpResponse } from '@presentation/protocols'
+import { MongodbHelper } from '@infra/db/mongodb/mongodb-helper'
 
-import MongodbHelper from '@infra/db/mongodb/mongodb-helper'
+import { NicknameInUseError } from '@presentation/errors'
+import { Controller, HttpResponse } from '@presentation/protocols'
+import { conflict, created, serverError } from '@presentation/helpers'
 
 export class AddUserController implements Controller {
   // constructor(private readonly addUserUsecase: AddUserUsecase) {}
@@ -13,13 +13,20 @@ export class AddUserController implements Controller {
       // await this.addUserUsecase.execute({
       //   ...request
       // })
-      const userCollection = await mongodbHelper.getCollection('users')
+      const { name, lastname, nickname, address, biography } = request
 
-      const userData = await userCollection.insertOne(request)
+      const userCollection = await MongodbHelper.getCollection('users')
+      const existsNickname = await userCollection.findOne({ nickname }, { projection: { nickname: 1, _id: 0 } })
 
-      return created(userData.ops[0])
+      if (existsNickname) {
+        const nicknameInUseError = new NicknameInUseError()
+        return conflict(nicknameInUseError)
+      }
+
+      const userData = await userCollection.insertOne({ name, lastname, nickname, address, biography })
+
+      return created(MongodbHelper.map(userData.ops[0]))
     } catch (error) {
-      console.error(error)
       return serverError(error)
     }
   }
@@ -30,5 +37,7 @@ export namespace AddUserController {
     name: string
     lastname: string
     nickname: string
+    address: string
+    biography: string
   }
 }
