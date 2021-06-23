@@ -1,20 +1,26 @@
 // import { AddUserUsecase } from '@domain/usecases'
+import { mongodbHelper } from '@main/server'
+import { created, serverError } from '@presentation/helpers'
 import { Controller, HttpResponse } from '@presentation/protocols'
-// import { badRequest, serverError, noContent } from '@presentation/helpers'
+
+import MongodbHelper from '@infra/db/mongodb/mongodb-helper'
 
 export class AddUserController implements Controller {
   // constructor(private readonly addUserUsecase: AddUserUsecase) {}
 
   public async handle(request: AddUserController.Request): Promise<HttpResponse> {
     try {
-      console.log(request)
       // await this.addUserUsecase.execute({
-      //   ...request,
+      //   ...request
       // })
+      const userCollection = await mongodbHelper.getCollection('users')
 
-      return { body: null, statusCode: 201 }
+      const userData = await userCollection.insertOne(request)
+
+      return created(userData.ops[0])
     } catch (error) {
-      return { body: null, statusCode: 500 }
+      console.error(error)
+      return serverError(error)
     }
   }
 }
