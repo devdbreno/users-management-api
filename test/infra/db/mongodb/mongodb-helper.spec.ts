@@ -1,29 +1,24 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 
-import MongodbHelper from '@infra/db/mongodb/mongodb-helper'
-
-const mongodbSut = {
-  mongodbHelper: new MongodbHelper(),
-  mongodbMemoryServer: new MongoMemoryServer()
-}
+import { mongodbHelper } from '@main/server'
 
 describe('Mongodb Helper', () => {
   beforeAll(async () => {
-    const mongodbUri = await mongodbSut.mongodbMemoryServer.getUri()
-    await mongodbSut.mongodbHelper.connect(mongodbUri)
+    const mongodbUri = await new MongoMemoryServer().getUri()
+    await mongodbHelper.connect(mongodbUri)
   })
 
   afterAll(async () => {
-    await mongodbSut.mongodbHelper.disconnect()
+    await mongodbHelper.disconnect()
   })
 
   it('Should reconnect if mongodb is down.', async () => {
-    let userCollection = await mongodbSut.mongodbHelper.getCollection('users')
+    let userCollection = await mongodbHelper.getCollection('users')
     expect(userCollection).toBeTruthy()
 
-    await mongodbSut.mongodbHelper.disconnect()
+    await mongodbHelper.disconnect()
 
-    userCollection = await mongodbSut.mongodbHelper.getCollection('users')
+    userCollection = await mongodbHelper.getCollection('users')
     expect(userCollection).toBeTruthy()
   })
 })

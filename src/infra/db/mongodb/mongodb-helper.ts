@@ -15,7 +15,7 @@ export default class MongodbHelper {
   }
 
   public async disconnect(): Promise<void> {
-    await this.mongodbClient?.close()
+    await this.mongodbClient.close()
   }
 
   async getCollection(collectionName: string): Promise<Collection> {
