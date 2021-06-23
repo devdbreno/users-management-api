@@ -1,6 +1,6 @@
 import { MongoClient, Collection } from 'mongodb'
 
-type anyObjectData = Record<string, unknown>
+import { anyObjectData } from '@main/config/app'
 
 export default class MongodbHelper {
   private mongodbUri!: string
