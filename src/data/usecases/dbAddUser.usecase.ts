@@ -11,14 +11,7 @@ export class DbAddUserUsecase implements AddUserUsecase {
 
   async add(userData: AddUserUsecase.Params): Promise<AddUserUsecase.Result> {
     const userCollection = await MongodbHelper.getCollection('users')
-    const existsNickname = await userCollection.findOne(
-      {
-        nickname: userData.nickname
-      },
-      {
-        projection: { nickname: 1 }
-      }
-    )
+    const existsNickname = await userCollection.findOne({ nickname: userData.nickname }, { projection: { _id: 1 } })
 
     if (existsNickname) return buildClientError(NicknameInUseError, conflict)
 
