@@ -1,3 +1,4 @@
+import { UserModel } from '@domain/models/user.model'
 import { BuildClientErrorReturn } from '@presentation/helpers'
 
 export interface AddUserUsecase {
@@ -13,5 +14,5 @@ export namespace AddUserUsecase {
     biography: string
   }
 
-  export type Result = ({ id: string } & Params) | BuildClientErrorReturn
+  export type Result = UserModel | BuildClientErrorReturn
 }

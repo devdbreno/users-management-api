@@ -1,6 +1,6 @@
 import { AddUserUsecase } from '@domain/usecases'
 
-import { created, serverError } from '@presentation/helpers'
+import { created, execClientError, serverError } from '@presentation/helpers'
 import { Controller, HttpResponse } from '@presentation/protocols'
 import { checkAddUserControllerRequest } from '@validation/addUserController.validator'
 
@@ -19,10 +19,7 @@ export class AddUserController implements Controller {
         biography: request.biography
       })
 
-      if (Reflect.has(userOrError, 'clientError')) {
-        const { applyError, buildError } = Reflect.get(userOrError, 'clientError')
-        return applyError(buildError())
-      }
+      if (Reflect.has(userOrError, 'clientError')) return execClientError(Reflect.get(userOrError, 'clientError'))
 
       return created(userOrError)
     } catch (error) {
