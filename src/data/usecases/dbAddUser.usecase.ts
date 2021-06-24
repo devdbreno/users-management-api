@@ -1,31 +1,29 @@
 import { AddUserUsecase } from '@domain/usecases'
 // import { AddAccountRepository, CheckAccountByEmailRepository } from '@/data/protocols'
-
 import { MongodbHelper } from '@infra/db'
+
+import { conflict } from '@presentation/helpers'
+import { buildClientError } from '@presentation/helpers'
+import { NicknameInUseError } from '@presentation/errors'
 
 export class DbAddUserUsecase implements AddUserUsecase {
   constructor() {} // private readonly checkUserByNicknameRepository: CheckAccountByEmailRepository // private readonly addAccountRepository: AddAccountRepository,
 
   async add(userData: AddUserUsecase.Params): Promise<AddUserUsecase.Result> {
-    console.log(userData)
+    const userCollection = await MongodbHelper.getCollection('users')
+    const existsNickname = await userCollection.findOne(
+      {
+        nickname: userData.nickname
+      },
+      {
+        projection: { nickname: 1 }
+      }
+    )
 
-    // const userCollection = await MongodbHelper.getCollection('users')
-    // const existsNickname = await userCollection.findOne({ nickname }, { projection: { nickname: 1, _id: 0 } })
+    if (existsNickname) return buildClientError(NicknameInUseError, conflict)
 
-    // if (existsNickname) {
-    //   const nicknameInUseError = new NicknameInUseError()
-    //   return conflict(nicknameInUseError)
-    // }
+    const user = MongodbHelper.map((await userCollection.insertOne(userData)).ops[0]) as AddUserUsecase.Result
 
-    // const user = await userCollection.insertOne({ name, lastname, nickname, address, biography })
-
-    // const exists = await this.checkUserByNicknameRepository.checkByEmail(userData.nickname)
-    // let isValid = false
-
-    // if (!exists) {
-    //   isValid = await this.addAccountRepository.add({ ...userData, password: hashedPassword })
-    // }
-
-    return { id: '0dgfbb653ffg', ...userData }
+    return user
   }
 }
