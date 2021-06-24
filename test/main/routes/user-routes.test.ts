@@ -3,11 +3,12 @@ import { Collection } from 'mongodb'
 
 import app from '@main/config/app'
 import { MONGO_URL } from '@main/config/env'
+
+import { conflict, created } from '@presentation/helpers'
 import { MongodbHelper } from '@infra/db/mongodb/mongodb-helper'
-import { AddUserController } from '@presentation/controllers'
 
 import { genRandomValidUser } from '@test/__fixtures__/domain'
-import { created } from '@presentation/helpers'
+import { NicknameInUseError } from '@presentation/errors'
 
 describe('User Routes', () => {
   let userCollection: Collection
@@ -51,8 +52,12 @@ describe('User Routes', () => {
         .send({ ...randomValidUser, nickname: 'torvalds' })
         .expect(409)
         .then((response) => {
-          expect(response.statusCode).toStrictEqual(409)
-          expect(response.body.error).toStrictEqual('Nickname is already in use')
+          const { statusCode, body } = conflict(new NicknameInUseError())
+
+          const conflictErrorResponse = { statusCode: response.statusCode, ...response.body }
+          const conflictNicknameInUseError = { statusCode, error: body.message }
+
+          expect(conflictErrorResponse).toStrictEqual(conflictNicknameInUseError)
         })
     })
   })
