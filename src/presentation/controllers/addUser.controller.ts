@@ -2,11 +2,14 @@ import { AddUserUsecase } from '@domain/usecases'
 
 import { created, serverError } from '@presentation/helpers'
 import { Controller, HttpResponse } from '@presentation/protocols'
+import { checkAddUserControllerRequest } from '@validation/addUserController.validator'
 
 export class AddUserController implements Controller {
   constructor(private readonly addUserUsecase: AddUserUsecase) {}
 
   public async handle(request: AddUserController.Request): Promise<HttpResponse> {
+    checkAddUserControllerRequest(request)
+
     try {
       const userOrError = await this.addUserUsecase.add({
         name: request.name,
@@ -16,9 +19,7 @@ export class AddUserController implements Controller {
         biography: request.biography
       })
 
-      const hasClientError = Reflect.has(userOrError, 'clientError')
-
-      if (hasClientError) {
+      if (Reflect.has(userOrError, 'clientError')) {
         const { applyError, buildError } = Reflect.get(userOrError, 'clientError')
         return applyError(buildError())
       }
