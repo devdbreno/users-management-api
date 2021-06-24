@@ -20,6 +20,7 @@
     "rootDirs": ["src", "test"],
     "paths": {
       "@test/*": ["test/*"],
+      "@data/*": ["src/data/*"],
       "@main/*": ["src/main/*"],
       "@infra/*": ["src/infra/*"],
       "@domain/*": ["src/domain/*"],
