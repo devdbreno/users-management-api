@@ -1,14 +1,12 @@
-import assert from 'assert'
-
 import request from 'supertest'
 import { Collection } from 'mongodb'
 
 import app from '@main/config/app'
 import { MONGO_URL } from '@main/config/env'
-import { genRandomValidUser } from '@test/__fixtures__/domain'
 import { MongodbHelper } from '@infra/db/mongodb/mongodb-helper'
 import { AddUserController } from '@presentation/controllers'
-import { AddUser } from '@domain/usecases'
+
+import { genRandomValidUser } from '@test/__fixtures__/domain'
 
 describe('User Routes', () => {
   let userCollection: Collection
