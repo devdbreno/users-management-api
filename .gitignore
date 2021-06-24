@@ -1,5 +1,5 @@
 # docker-compose.yml mongodb
-mongodb
+/mongodb
 
 # @shelf/jest-mongodb
 globalConfig.json
