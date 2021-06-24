@@ -1,6 +1,10 @@
+import { BuildClientErrorReturn } from '@presentation/helpers'
+
 export interface AddUserUsecase {
   add: (account: AddUserUsecase.Params) => Promise<AddUserUsecase.Result>
 }
+
+export type AddUserData = { id: string } & AddUserUsecase.Params
 
 export namespace AddUserUsecase {
   export type Params = {
@@ -11,5 +15,5 @@ export namespace AddUserUsecase {
     biography: string
   }
 
-  export type Result = { id: string } & AddUserUsecase.Params
+  export type Result = AddUserData | BuildClientErrorReturn
 }

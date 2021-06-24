@@ -8,9 +8,22 @@ export class AddUserController implements Controller {
 
   public async handle(request: AddUserController.Request): Promise<HttpResponse> {
     try {
-      const user = await this.addUserUsecase.add(request)
+      const userOrError = await this.addUserUsecase.add({
+        name: request.name,
+        lastname: request.lastname,
+        nickname: request.nickname,
+        address: request.address,
+        biography: request.biography
+      })
 
-      return created(user)
+      const hasClientError = Reflect.has(userOrError, 'clientError')
+
+      if (hasClientError) {
+        const { applyError, buildError } = Reflect.get(userOrError, 'clientError')
+        return applyError(buildError())
+      }
+
+      return created(userOrError)
     } catch (error) {
       return serverError(error)
     }
