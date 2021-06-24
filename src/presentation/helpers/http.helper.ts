@@ -9,8 +9,8 @@ export const ok = (data: anyData): HttpResponse => ({
 })
 
 export const created = (data: anyData): HttpResponse => ({
-  body: data,
-  statusCode: 201
+  statusCode: 201,
+  body: data
 })
 
 export const conflict = (error: Error): HttpResponse => ({
