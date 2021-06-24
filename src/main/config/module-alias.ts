@@ -8,5 +8,6 @@ addAliases({
   '@main': join(rootDir, 'src/main'),
   '@infra': join(rootDir, 'src/infra'),
   '@domain': join(rootDir, 'src/domain'),
+  '@validation': join(rootDir, 'src/validation'),
   '@presentation': join(rootDir, 'src/presentation')
 })

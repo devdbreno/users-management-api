@@ -24,6 +24,7 @@
       "@main/*": ["src/main/*"],
       "@infra/*": ["src/infra/*"],
       "@domain/*": ["src/domain/*"],
+      "@validation/*": ["src/validation/*"],
       "@presentation/*": ["src/presentation/*"]
     }
   }

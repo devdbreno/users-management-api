@@ -14,6 +14,7 @@ module.exports = {
     '@main/(.*)': '<rootDir>/src/main/$1',
     '@infra/(.*)': '<rootDir>/src/infra/$1',
     '@domain/(.*)': '<rootDir>/src/domain/$1',
+    '@validation/(.*)': '<rootDir>/src/validation/$1',
     '@presentation/(.*)': '<rootDir>/src/presentation/$1'
   }
 }
