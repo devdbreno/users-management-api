@@ -1,8 +1,8 @@
 import faker from 'faker/locale/pt_BR'
 
-import { AddUser } from '@domain/usecases'
+import { AddUserUsecase } from '@domain/usecases'
 
-export const genRandomValidUser = (): AddUser.Params => ({
+export const genRandomValidUser = (): AddUserUsecase.Params => ({
   name: faker.name.findName(),
   lastname: faker.internet.email(),
   nickname: faker.internet.userName().toLowerCase(),
