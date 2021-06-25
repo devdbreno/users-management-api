@@ -1,11 +1,11 @@
 import { AddUserUsecase } from '@domain/usecases'
 
 export class AddUserUsecaseSpy implements AddUserUsecase {
-  result!: AddUserUsecase.Result
+  return!: AddUserUsecase.Return
   params!: AddUserUsecase.Params
 
-  async add(params: AddUserUsecase.Params): Promise<AddUserUsecase.Result> {
+  async add(params: AddUserUsecase.Params): Promise<AddUserUsecase.Return> {
     this.params = params
-    return this.result
+    return this.return
   }
 }

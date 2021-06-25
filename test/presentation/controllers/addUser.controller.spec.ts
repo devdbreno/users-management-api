@@ -1,10 +1,11 @@
 import { AddUserUsecase } from '@domain/usecases'
+
 import { AddUserController } from '@presentation/controllers'
 import { ServerError, NicknameInUseError } from '@presentation/errors'
 import { created, serverError, conflict, buildClientError } from '@presentation/helpers'
 
 import { AddUserUsecaseSpy } from '@test/presentation/__mocks__'
-import { throwError, randomValidUserWithID, randomValidUser } from '@test/__fixtures__'
+import { throwError, randomValidUserModel, randomValidUser } from '@test/__fixtures__'
 
 type SutTypes = {
   addUserUsecaseSpy: AddUserUsecaseSpy
@@ -19,19 +20,11 @@ const makeSut = (): SutTypes => {
 
 describe('AddUserController', () => {
   let validUser: AddUserController.Request
-  let validUserWithID: AddUserUsecase.Result
+  let validUserModel: AddUserUsecase.ResultSucess
 
   beforeEach(() => {
     validUser = randomValidUser()
-    validUserWithID = randomValidUserWithID(validUser)
-  })
-
-  it(`Should return 201 'Created' if valid user data is provided`, async () => {
-    const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
-    jest.spyOn(addUserUsecaseSpy, 'add').mockResolvedValueOnce(validUserWithID)
-
-    const httpResponse = await addUserControllerSut.handle(validUser)
-    expect(httpResponse).toStrictEqual(created(validUserWithID))
+    validUserModel = randomValidUserModel(validUser)
   })
 
   it('Should call AddUserController.handle with valid user', async () => {
@@ -41,10 +34,18 @@ describe('AddUserController', () => {
     expect(addUserUsecaseSpy.params).toStrictEqual(validUser)
   })
 
+  it(`Should return 201 'Created' if valid user data is provided`, async () => {
+    const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
+    jest.spyOn(addUserUsecaseSpy, 'add').mockResolvedValueOnce(validUserModel)
+
+    const httpResponse = await addUserControllerSut.handle(validUser)
+    expect(httpResponse).toStrictEqual(created(validUserModel))
+  })
+
   it(`Should return 409 'Conflict' if AddUserUsecase returns a conflict error`, async () => {
     const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
 
-    addUserUsecaseSpy.result = buildClientError(NicknameInUseError, conflict)
+    addUserUsecaseSpy.return = buildClientError(NicknameInUseError, conflict)
 
     const httpResponse = await addUserControllerSut.handle(validUser)
     expect(httpResponse).toStrictEqual(conflict(new NicknameInUseError()))
