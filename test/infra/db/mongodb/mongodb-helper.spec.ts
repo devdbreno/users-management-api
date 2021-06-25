@@ -1,5 +1,6 @@
+import { UserModel } from '@domain/models'
 import { MONGO_URL } from '@main/config/env'
-import { MongodbHelper } from '@infra/db/mongodb/mongodb-helper'
+import { MongodbHelper } from '@infra/db/mongodb'
 
 describe('Mongodb Helper', () => {
   beforeAll(async () => {
@@ -11,12 +12,12 @@ describe('Mongodb Helper', () => {
   })
 
   it('Should reconnect if Mongodb client is down', async () => {
-    let userCollection = await MongodbHelper.getCollection('users')
+    let userCollection = await MongodbHelper.getCollection<UserModel>('users')
     expect(userCollection).toBeTruthy()
 
     await MongodbHelper.disconnect()
 
-    userCollection = await MongodbHelper.getCollection('users')
+    userCollection = await MongodbHelper.getCollection<UserModel>('users')
     expect(userCollection).toBeTruthy()
   })
 })

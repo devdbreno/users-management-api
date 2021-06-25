@@ -1,10 +1,9 @@
 import request from 'supertest'
-import { Collection } from 'mongodb'
 
 import app from '@main/config/app'
 import { MONGO_URL } from '@main/config/env'
 
-import { MongodbHelper } from '@infra/db/mongodb/mongodb-helper'
+import { MongodbHelper } from '@infra/db/mongodb'
 
 import { created } from '@presentation/helpers'
 import { AddUserController } from '@presentation/controllers'
@@ -13,7 +12,6 @@ import { NicknameInUseError } from '@presentation/errors'
 import { randomValidUser } from '@test/__fixtures__'
 
 describe('User Routes', () => {
-  let userCollection: Collection
   let validUser: AddUserController.Request
 
   beforeAll(async () => {
@@ -26,9 +24,6 @@ describe('User Routes', () => {
 
   beforeEach(async () => {
     validUser = randomValidUser()
-
-    userCollection = await MongodbHelper.getCollection('users')
-    await userCollection.deleteMany({})
   })
 
   describe('POST /user', () => {

@@ -15,9 +15,9 @@ export const MongodbHelper = {
     await mongodbClient.close()
   },
 
-  async getCollection(name: string): Promise<Collection> {
+  async getCollection<TSchema>(name: string): Promise<Collection<TSchema>> {
     if (!mongodbClient.isConnected()) await this.connect(mongodbUri)
-    return mongodbClient.db().collection(name)
+    return mongodbClient.db().collection<TSchema>(name)
   },
 
   map: ({ _id, ...rest }: anyData): anyData => ({ id: _id, ...rest }),
