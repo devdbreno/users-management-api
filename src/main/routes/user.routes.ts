@@ -1,8 +1,9 @@
 import { Router } from 'express'
 
 import { adaptRoute } from '@main/adapters'
-import { makeAddUserController } from '@main/factories'
+import { makeAddUserController, makeLoadUsersController } from '@main/factories'
 
 export default (router: Router): void => {
-  router.post('/user', adaptRoute(makeAddUserController()))
+  router.get('/users', adaptRoute(makeAddUserController()))
+  router.post('/users', adaptRoute(makeLoadUsersController()))
 }

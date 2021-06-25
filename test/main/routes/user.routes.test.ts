@@ -29,7 +29,7 @@ describe('User Routes', () => {
   describe('POST /user', () => {
     it(`Should return 201 'Created' when creating user`, async () => {
       await request(app)
-        .post('/api/user')
+        .post('/api/users')
         .send(validUser)
         .expect(201)
         .then((response) => {
@@ -41,8 +41,8 @@ describe('User Routes', () => {
     it(`Should return 409 'Conflict' when creating user with existing nickname`, async () => {
       validUser.nickname = 'torvalds'
 
-      await request(app).post('/api/user').send(validUser)
-      const response = await request(app).post('/api/user').send(validUser).expect(409)
+      await request(app).post('/api/users').send(validUser)
+      const response = await request(app).post('/api/users').send(validUser).expect(409)
 
       const conflictHttpNicknameInUseError = {
         error: new NicknameInUseError().message,
