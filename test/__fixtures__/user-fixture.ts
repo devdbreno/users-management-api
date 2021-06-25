@@ -11,7 +11,9 @@ export const randomValidUser = (): AddUserUsecase.Params => ({
   biography: faker.lorem.sentence(5)
 })
 
-export const randomValidUserWithID = (user: AddUserUsecase.Params): AddUserUsecase.Result => ({
+export const randomValidUserModel = (user: AddUserUsecase.Params): AddUserUsecase.ResultSucess => ({
   id: new ObjectID().toHexString(),
-  ...user
+  ...user,
+  createdAt: new Date(),
+  updatedAt: new Date()
 })
