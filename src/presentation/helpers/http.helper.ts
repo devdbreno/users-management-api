@@ -8,7 +8,7 @@ export const ok = (data: anyData): HttpResponse => ({
   body: data
 })
 
-export const created = (data: anyData): HttpResponse => ({
+export const created = <T>(data: T): HttpResponse => ({
   statusCode: 201,
   body: data
 })

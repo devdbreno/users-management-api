@@ -1,5 +1,5 @@
 import { UserModel } from '@domain/models/user.model'
-import { BuildClientErrorReturn } from '@presentation/helpers'
+import { NicknameInUseError } from '@presentation/errors'
 
 export interface AddUserUsecase {
   add: (user: AddUserUsecase.Params) => Promise<AddUserUsecase.Return>
@@ -15,6 +15,6 @@ export namespace AddUserUsecase {
   }
 
   export type Return = ResultSucess | ResultError
-  export type ResultError = BuildClientErrorReturn
+  export type ResultError = NicknameInUseError
   export type ResultSucess = UserModel
 }

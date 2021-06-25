@@ -1,28 +1,24 @@
+import { UserModel } from '@domain/models'
 import { AddUserUsecase } from '@domain/usecases'
-// import { AddAccountRepository, CheckAccountByEmailRepository } from '@/data/protocols'
-import { MongodbHelper } from '@infra/db'
 
-import { conflict } from '@presentation/helpers'
-import { buildClientError } from '@presentation/helpers'
+import { MongodbHelper } from '@infra/db'
 import { NicknameInUseError } from '@presentation/errors'
 
 export class DbAddUserUsecase implements AddUserUsecase {
-  constructor() {} // private readonly checkUserByNicknameRepository: CheckAccountByEmailRepository // private readonly addAccountRepository: AddAccountRepository,
+  constructor() {}
 
   async add(userData: AddUserUsecase.Params): Promise<AddUserUsecase.Return> {
-    const userCollection = await MongodbHelper.getCollection('users')
+    const userCollection = await MongodbHelper.getCollection<Omit<UserModel, 'id'>>('users')
+
     const existsNickname = await userCollection.findOne({ nickname: userData.nickname }, { projection: { _id: 1 } })
+    if (existsNickname) return new NicknameInUseError()
 
-    if (existsNickname) return buildClientError(NicknameInUseError, conflict)
+    const { ops: result } = await userCollection.insertOne({
+      ...userData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })
 
-    const [user] = (
-      await userCollection.insertOne({
-        ...userData,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      })
-    ).ops
-
-    return MongodbHelper.map(user) as AddUserUsecase.ResultSucess
+    return MongodbHelper.map<UserModel>(result[0])
   }
 }
