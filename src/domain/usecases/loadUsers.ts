@@ -5,5 +5,6 @@ export interface LoadUsersUsecase {
 }
 
 export namespace LoadUsersUsecase {
-  export type Result = UserModel[]
+  export type Return = ResultSucess
+  export type ResultSucess = UserModel[]
 }

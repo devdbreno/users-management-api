@@ -1,11 +1,10 @@
-// import { AddAccountRepository, CheckAccountByEmailRepository } from '@/data/protocols'
 import { MongodbHelper } from '@infra/db'
 import { LoadUsersUsecase } from '@domain/usecases'
 
 export class DbLoadAllUserUsecase implements LoadUsersUsecase {
-  constructor() {} // private readonly checkUserByNicknameRepository: CheckAccountByEmailRepository // private readonly addAccountRepository: AddAccountRepository,
+  constructor() {}
 
-  public async add(userName: string, userLastname: string): Promise<LoadUsersUsecase.Result> {
+  public async add(userName: string, userLastname: string): Promise<LoadUsersUsecase.Return> {
     const userCollection = await MongodbHelper.getCollection('users')
 
     console.log(userName, userLastname)
