@@ -15,13 +15,13 @@ export class DbAddUserUsecase implements AddUserUsecase {
 
     if (existsNickname) return buildClientError(NicknameInUseError, conflict)
 
-    const user = (
+    const [user] = (
       await userCollection.insertOne({
         ...userData,
         createdAt: new Date(),
         updatedAt: new Date()
       })
-    ).ops[0]
+    ).ops
 
     return MongodbHelper.map(user) as AddUserUsecase.Result
   }
