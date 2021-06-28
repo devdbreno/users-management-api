@@ -19,7 +19,17 @@
 ## Arquitetura da API
 A API é separada pelas seguintes camadas: presentation, domain, infra e data. Uma tentativa de implementação da Clean Architecture.
 
-O template/boilerplate foi pego deste repositório, mas acabei fazendo relevantes mudanças sobre ele: https://github.com/rmanguinho/clean-ts-api
+### Usecases
+
+  Diz respeito às regras de negócio: é o que você pode fazer com a aplicação, é o porquê dela existir. Geralmente espera-se um caso de uso para cada ação.
+
+  Os casos de uso não devem saber quem os chama, executa-os ou como o resultado é apresentado, se foi uma resposta http em JSON ou XML ou simplesmente a geração de um arquivo .txt
+
+#### Presentation (Interfaces/Adapters): 
+
+Basicamente recebe dados externos e repassa-os para que sejam armazenados em alguma fonte: banco de dados é um exemplo. Define contratos (intefaces) para os dados de que necessitam e então aplicam-lhes alguma lógica.
+
+Fazem com que os casos de uso (usecases) não saibam donde os dados vêem e usam alguma implementação de um caso de uso para enviarem os dados, prosseguindo o fluxo de uma requisição, comando ou clique.
 
 ## Features
 
