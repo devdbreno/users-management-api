@@ -1,6 +1,28 @@
 # Users Management REST API
 
-- Métodos:
+## Ferramental técnico
+- NodeJS
+- Express
+- TypeScript
+- MongoDB
+
+## Como utilizar a API
+
+> 1) Primeiro clone o repositório: **git clone https://github.com/devdbreno/users-management-api.git**
+
+> 2) Segundo instale as dependências necessárias: **npm install (ou semelhantes)**
+
+> 3) Terceiro rode algum comando de inicialização: **npm run build > npm run start:prod**
+
+> Ou: **npm run start:dev (somente)**
+
+## Arquitetura da API
+A API é separada pelas seguintes camadas: presentation, domain, infra e data. Uma tentativa de implementação da Clean Architecture.
+
+O template/boilerplate foi pego deste repositório, mas acabei fazendo relevantes mudanças sobre ele: https://github.com/rmanguinho/clean-ts-api
+
+## Features
+
   - [✅] Cria um novo usuário recebendo os dados pelo corpo da requisição: retorna os dados do usuário criado com status correspondente.
 
     - Se nickname já existe, retornar status e mensagem de erro.
