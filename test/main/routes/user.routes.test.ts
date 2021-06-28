@@ -1,18 +1,25 @@
 import request from 'supertest'
+import { Collection } from 'mongodb'
 
 import app from '@main/config/app'
 import { MONGO_URL } from '@main/config/env'
 
-import { MongodbHelper } from '@infra/db/mongodb'
+import { UserModel } from '@domain/models'
+import { MongodbHelper } from '@infra/db'
 
 import { created } from '@presentation/helpers'
-import { AddUserController } from '@presentation/controllers'
 import { NicknameInUseError } from '@presentation/errors'
 
-import { randomValidUser } from '@test/__fixtures__'
+const user = {
+  name: 'Deivid',
+  lastname: 'Novaes',
+  nickname: 'devdbreno',
+  address: 'Calçada, Salvador, Bahia',
+  biography: 'Um desenvolvedor aí...'
+}
 
 describe('User Routes', () => {
-  let validUser: AddUserController.Request
+  let userCollection: Collection<UserModel>
 
   beforeAll(async () => {
     await MongodbHelper.connect(MONGO_URL)
@@ -23,38 +30,55 @@ describe('User Routes', () => {
   })
 
   beforeEach(async () => {
-    validUser = randomValidUser()
+    userCollection = await MongodbHelper.getCollection('users')
+    await userCollection.deleteMany({})
   })
 
   describe('POST /user', () => {
-    it(`Should return 201 'Created' when creating user`, async () => {
+    it(`Should return 201 "Created" when creating an user`, async () => {
       await request(app)
         .post('/api/users')
-        .send(validUser)
+        .send(user)
         .expect(201)
         .then((response) => {
-          const { id, createdAt, updatedAt, ...responseBody } = response.body
-          expect(created(responseBody)).toStrictEqual(created(validUser))
+          const { id, createdAt, updatedAt, ...partialBody } = response.body
+
+          expect(created(partialBody)).toStrictEqual(created(user))
         })
     })
 
-    it(`Should return 409 'Conflict' when creating user with existing nickname`, async () => {
-      validUser.nickname = 'torvalds'
+    it('Should return 409 "Conflict" when creating user with existing nickname', async () => {
+      await request(app).post('/api/users').send(user)
+      await request(app)
+        .post('/api/users')
+        .send(user)
+        .expect(409)
+        .then((response) => {
+          const conflictHttpError = { error: response.body.error, statusCode: response.statusCode }
+          const nickNameInUseErrorHttp = { error: new NicknameInUseError().message, statusCode: 409 }
 
-      await request(app).post('/api/users').send(validUser)
-      const response = await request(app).post('/api/users').send(validUser).expect(409)
+          expect(conflictHttpError).toStrictEqual(nickNameInUseErrorHttp)
+        })
+    })
+  })
 
-      const conflictHttpNicknameInUseError = {
-        error: new NicknameInUseError().message,
-        statusCode: 409
-      }
+  describe('GET /users', () => {
+    it('Should return 200 "OK" and an empty users list', async () => {
+      const response = await request(app).get('/api/users').expect(200)
 
-      const conflictResponseError = {
-        error: response.body.error,
-        statusCode: response.statusCode
-      }
+      expect(response.body).toStrictEqual([])
+    })
 
-      expect(conflictResponseError).toStrictEqual(conflictHttpNicknameInUseError)
+    it('Should return 200 "OK" and appropriate users list', async () => {
+      await request(app).post('/api/users').send(user)
+      await request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) => {
+          const { id, createdAt, updatedAt, ...partialBody } = response.body[0]
+
+          expect([partialBody]).toStrictEqual([user])
+        })
     })
   })
 })
