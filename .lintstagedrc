@@ -1,6 +1,0 @@
-{
-  "*.ts": [
-    "npm run format",
-    "npm run test:staged"
-  ]
-}

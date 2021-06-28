@@ -1,21 +1,10 @@
-import { UserModel } from '@domain/models'
 import { LoadUsersUsecase } from '@domain/usecases'
-
-import { MongodbHelper } from '@infra/db'
+import { LoadUsersRepository } from '@data/protocols'
 
 export class DbLoadUsersUsecase implements LoadUsersUsecase {
-  constructor() {}
+  constructor(private readonly loadUsersRepository: LoadUsersRepository) {}
 
-  public async load(usersParams?: LoadUsersUsecase.Params): Promise<LoadUsersUsecase.Return> {
-    const userCollection = await MongodbHelper.getCollection<UserModel>('users')
-
-    const result = await userCollection
-      .find({
-        name: usersParams?.name,
-        lastname: usersParams?.lastname
-      })
-      .toArray()
-
-    return result
+  public async load(name?: string, lastname?: string): Promise<LoadUsersUsecase.Result> {
+    return this.loadUsersRepository.load(name, lastname)
   }
 }

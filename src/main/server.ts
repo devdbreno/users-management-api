@@ -1,8 +1,7 @@
-import './config/dotenv'
 import './config/module-alias'
 
-import { MongodbHelper } from '@infra/db/mongodb'
-import { MONGO_URL, PORT } from '@main/config/env'
+import { MongodbHelper } from '@infra/db'
+import { PORT, MONGO_URL } from '@main/config/env'
 
 MongodbHelper.connect(MONGO_URL)
   .then(async () => {

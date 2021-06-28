@@ -4,14 +4,10 @@ import { NicknameInUseError } from '@presentation/errors'
 import { Controller, HttpResponse } from '@presentation/protocols'
 import { conflict, created, serverError } from '@presentation/helpers'
 
-import { checkAddUserControllerRequest } from '@validation/addUserController.validator'
-
 export class AddUserController implements Controller {
   constructor(private readonly addUserUsecase: AddUserUsecase) {}
 
   public async handle(request: AddUserController.Request): Promise<HttpResponse> {
-    checkAddUserControllerRequest(request) // transfer to middlwares
-
     try {
       const userOrError = await this.addUserUsecase.add({
         name: request.name,

@@ -1,1 +1,2 @@
-export * from '@presentation/controllers/addUser.controller'
+export * from './addUser.controller'
+export * from './loadUsers.controller'

@@ -21,6 +21,5 @@ export const MongodbHelper = {
   },
 
   map: <TSchema>({ _id, ...rest }: anyData): TSchema => ({ id: _id, ...rest } as unknown as TSchema),
-
   mapCollection: (collec: anyData[]): anyData[] => collec.map((c) => MongodbHelper.map(c))
 }

@@ -1,1 +1,2 @@
-export * from '@main/adapters/express-route.adapter'
+export * from './express-route.adapter'
+export * from './expressMiddleware.adapter'

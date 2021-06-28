@@ -1,6 +1,7 @@
 dist
 data
-.vscode
+mongodb
 coverage
 node_modules
+.vscode
 *.js
