@@ -1,21 +1,22 @@
 import { AddUserUsecase } from '@domain/usecases'
 
 import { AddUserController } from '@presentation/controllers'
+import { created, serverError, conflict } from '@presentation/helpers'
 import { ServerError, NicknameInUseError } from '@presentation/errors'
-import { created, serverError, conflict, buildClientError } from '@presentation/helpers'
 
 import { AddUserUsecaseSpy } from '@test/presentation/__mocks__'
 import { throwError, randomValidUserModel, randomValidUser } from '@test/__fixtures__'
 
 type SutTypes = {
-  addUserUsecaseSpy: AddUserUsecaseSpy
-  addUserControllerSut: AddUserController
+  usecaseSpy: AddUserUsecaseSpy
+  controller: AddUserController
 }
 
 const makeSut = (): SutTypes => {
-  const addUserUsecaseSpy = new AddUserUsecaseSpy()
-  const addUserControllerSut = new AddUserController(addUserUsecaseSpy)
-  return { addUserUsecaseSpy, addUserControllerSut }
+  const usecaseSpy = new AddUserUsecaseSpy()
+  const controller = new AddUserController(usecaseSpy)
+
+  return { usecaseSpy, controller }
 }
 
 describe('AddUserController', () => {
@@ -28,34 +29,37 @@ describe('AddUserController', () => {
   })
 
   it('Should call AddUserController.handle with valid user', async () => {
-    const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
+    const { usecaseSpy, controller } = makeSut()
 
-    await addUserControllerSut.handle(validUser)
-    expect(addUserUsecaseSpy.params).toStrictEqual(validUser)
+    await controller.handle(validUser)
+
+    expect(usecaseSpy.params).toStrictEqual(validUser)
   })
 
   it(`Should return 201 'Created' if valid user data is provided`, async () => {
-    const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
-    jest.spyOn(addUserUsecaseSpy, 'add').mockResolvedValueOnce(validUserModel)
+    const { usecaseSpy, controller } = makeSut()
 
-    const httpResponse = await addUserControllerSut.handle(validUser)
+    jest.spyOn(usecaseSpy, 'add').mockResolvedValueOnce(validUserModel)
+
+    const httpResponse = await controller.handle(validUser)
     expect(httpResponse).toStrictEqual(created(validUserModel))
   })
 
   it(`Should return 409 'Conflict' if AddUserUsecase returns a conflict error`, async () => {
-    const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
+    const { usecaseSpy, controller } = makeSut()
 
-    addUserUsecaseSpy.return = buildClientError(NicknameInUseError, conflict)
+    usecaseSpy.return = new NicknameInUseError()
 
-    const httpResponse = await addUserControllerSut.handle(validUser)
+    const httpResponse = await controller.handle(validUser)
     expect(httpResponse).toStrictEqual(conflict(new NicknameInUseError()))
   })
 
   it('Should return 500 if AddUserUsecase throws', async () => {
-    const { addUserUsecaseSpy, addUserControllerSut } = makeSut()
-    jest.spyOn(addUserUsecaseSpy, 'add').mockImplementationOnce(throwError)
+    const { usecaseSpy, controller } = makeSut()
 
-    const httpResponse = await addUserControllerSut.handle(validUser)
+    jest.spyOn(usecaseSpy, 'add').mockImplementationOnce(throwError)
+
+    const httpResponse = await controller.handle(validUser)
     expect(httpResponse).toStrictEqual(serverError(new ServerError()))
   })
 })
